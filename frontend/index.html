@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSM SmartStock - Formulaire</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📋 MSM SmartStock</h1>
+            <p>Questionnaire d'étude des besoins - Quincaillerie</p>
+            <div class="progress-bar">
+                <div class="progress" id="progress" style="width: 0%"></div>
+            </div>
+            <div class="auto-save-status" id="saveStatus">✅ Enregistré</div>
+        </header>
+
+        <form id="formulaire">
+            <input type="hidden" id="responseId" value="">
+
+            <!-- SECTION 1 -->
+            <section class="form-section">
+                <h2>SECTION 1 — Informations générales</h2>
+                
+                <div class="form-group">
+                    <label>1. Nom de l'entreprise *</label>
+                    <input type="text" id="company_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>2. Nom du responsable *</label>
+                    <input type="text" id="responsible_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>3. Adresse</label>
+                    <input type="text" id="address">
+                </div>
+
+                <div class="form-group">
+                    <label>4. Téléphone *</label>
+                    <input type="tel" id="phone" required>
+                </div>
+
+                <div class="form-group">
+                    <label>5. Email</label>
+                    <input type="email" id="email">
+                </div>
+
+                <div class="form-group">
+                    <label>6. Date de création de l'entreprise</label>
+                    <input type="date" id="creation_date">
+                </div>
+
+                <div class="form-group">
+                    <label>7. Nombre d'employés *</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="employee_count" value="1"> 1</label>
+                        <label><input type="radio" name="employee_count" value="2 à 5"> 2 à 5</label>
+                        <label><input type="radio" name="employee_count" value="6 à 10"> 6 à 10</label>
+                        <label><input type="radio" name="employee_count" value="Plus de 10"> Plus de 10</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>8. Rôles des employés</label>
+                    <textarea id="employee_roles" rows="3" placeholder="Ex: Caissier, Magasinier, Livreur..."></textarea>
+                </div>
+            </section>
+
+            <!-- SECTION 2 -->
+            <section class="form-section">
+                <h2>SECTION 2 — Activités de l'entreprise</h2>
+                <div class="form-group">
+                    <label>Quels types de produits commercialisez-vous ?</label>
+                    <div class="checkbox-group" id="product_types">
+                        <label><input type="checkbox" value="Quincaillerie générale"> Quincaillerie générale</label>
+                        <label><input type="checkbox" value="Plomberie"> Plomberie</label>
+                        <label><input type="checkbox" value="Serrurerie"> Serrurerie</label>
+                        <label><input type="checkbox" value="Électricité"> Électricité</label>
+                        <label><input type="checkbox" value="Peinture"> Peinture</label>
+                        <label><input type="checkbox" value="Ciment"> Ciment</label>
+                        <label><input type="checkbox" value="Fer à béton"> Fer à béton</label>
+                        <label><input type="checkbox" value="Outillage"> Outillage</label>
+                        <label><input type="checkbox" value="Matériaux de construction"> Matériaux de construction</label>
+                        <label><input type="checkbox" value="Autres"> Autres</label>
+                    </div>
+                    <input type="text" id="other_products" placeholder="Précisez si 'Autres'..." style="margin-top:10px;">
+                </div>
+            </section>
+
+            <!-- SECTION 3 - Catégories -->
+            <section class="form-section">
+                <h2>SECTION 3 — Catégories de produits</h2>
+                <div class="form-group">
+                    <label>Listez vos catégories (ex: Vis, Clous, Serrures...)</label>
+                    <div id="categories_container">
+                        <div class="dynamic-input">
+                            <input type="text" class="category-input" placeholder="Catégorie 1">
+                        </div>
+                    </div>
+                    <button type="button" onclick="addCategory()" class="btn-add">+ Ajouter une catégorie</button>
+                </div>
+            </section>
+
+            <!-- SECTION 4 - Produits -->
+            <section class="form-section">
+                <h2>SECTION 4 — Liste des produits</h2>
+                <div class="form-group">
+                    <label>Pour chaque catégorie, listez les produits</label>
+                    <div id="products_container">
+                        <div class="product-category-group">
+                            <input type="text" class="product-category" placeholder="Catégorie">
+                            <textarea class="product-list" rows="3" placeholder="Listez les produits (un par ligne)"></textarea>
+                        </div>
+                    </div>
+                    <button type="button" onclick="addProductCategory()" class="btn-add">+ Ajouter une catégorie de produits</button>
+                </div>
+            </section>
+
+            <!-- SECTION 5 - Infos produits -->
+            <section class="form-section">
+                <h2>SECTION 5 — Informations sur chaque produit</h2>
+                <div class="form-group">
+                    <label>Quelles informations voulez-vous conserver ?</label>
+                    <div class="checkbox-group" id="product_info">
+                        <label><input type="checkbox" value="Nom"> Nom</label>
+                        <label><input type="checkbox" value="Catégorie"> Catégorie</label>
+                        <label><input type="checkbox" value="Marque"> Marque</label>
+                        <label><input type="checkbox" value="Référence"> Référence</label>
+                        <label><input type="checkbox" value="Taille / Dimension"> Taille / Dimension</label>
+                        <label><input type="checkbox" value="Couleur"> Couleur</label>
+                        <label><input type="checkbox" value="Unité de vente"> Unité de vente</label>
+                        <label><input type="checkbox" value="Prix d'achat"> Prix d'achat</label>
+                        <label><input type="checkbox" value="Prix de vente"> Prix de vente</label>
+                        <label><input type="checkbox" value="Fournisseur"> Fournisseur</label>
+                        <label><input type="checkbox" value="Quantité disponible"> Quantité disponible</label>
+                        <label><input type="checkbox" value="Emplacement dans le magasin"> Emplacement</label>
+                        <label><input type="checkbox" value="Date d'achat"> Date d'achat</label>
+                        <label><input type="checkbox" value="Observations"> Observations</label>
+                    </div>
+                    <input type="text" id="other_product_info" placeholder="Autres informations..." style="margin-top:10px;">
+                </div>
+            </section>
+
+            <!-- SECTION 6 - Unités -->
+            <section class="form-section">
+                <h2>SECTION 6 — Unités de vente</h2>
+                <div class="form-group">
+                    <label>Quels types d'unités utilisez-vous ?</label>
+                    <div class="checkbox-group" id="sale_units">
+                        <label><input type="checkbox" value="Pièce"> Pièce</label>
+                        <label><input type="checkbox" value="Sac"> Sac</label>
+                        <label><input type="checkbox" value="Carton"> Carton</label>
+                        <label><input type="checkbox" value="Paquet"> Paquet</label>
+                        <label><input type="checkbox" value="Boîte"> Boîte</label>
+                        <label><input type="checkbox" value="Rouleau"> Rouleau</label>
+                        <label><input type="checkbox" value="Litre"> Litre</label>
+                        <label><input type="checkbox" value="Kilogramme"> Kilogramme</label>
+                        <label><input type="checkbox" value="Mètre"> Mètre</label>
+                        <label><input type="checkbox" value="Barre"> Barre</label>
+                        <label><input type="checkbox" value="Autres"> Autres</label>
+                    </div>
+                    <input type="text" id="other_units" placeholder="Précisez..." style="margin-top:10px;">
+                </div>
+            </section>
+
+            <!-- SECTIONS 7 à 16 - Texte libre -->
+            <section class="form-section">
+                <h2>SECTION 7 — Fonctionnement actuel</h2>
+                <div class="form-group">
+                    <label>Comment gérez-vous actuellement votre stock ?</label>
+                    <textarea id="stock_management" rows="4"></textarea>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <h2>SECTION 8 — Gestion des achats</h2>
+                <div class="form-group">
+                    <label>Décrivez votre processus d'achat</label>
+                    <textarea id="purchase_process" rows="4"></textarea>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <h2>SECTION 9 — Gestion des ventes</h2>
+                <div class="form-group">
+                    <label>Décrivez votre processus de vente</label>
+                    <textarea id="sales_process" rows="4"></textarea>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <h2>SECTION 10 — Gestion du stock</h2>
+                <div class="form-group">
+                    <label>Quand mettez-vous le stock à jour ?</label>
+                    <textarea id="stock_update" rows="3"></textarea>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <h2>SECTION 11 — Fournisseurs</h2>
+                <div class="form-group">
+                    <label>Informations sur vos fournisseurs</label>
+                    <textarea id="suppliers_info" rows="4"></textarea>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <h2>SECTION 12 — Employés</h2>
+                <div class="form-group">
+                    <label>Informations sur les employés</label>
+                    <textarea id="employees_info" rows="4"></textarea>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <h2>SECTION 13 — Difficultés rencontrées</h2>
+                <div class="form-group">
+                    <label>Décrivez vos principales difficultés</label>
+                    <textarea id="difficulties" rows="4"></textarea>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <h2>SECTION 14 — Cas particuliers</h2>
+                <div class="form-group">
+                    <label>Vendez-vous à crédit ?</label>
+                    <select id="credit_sales">
+                        <option value="">Sélectionnez</option>
+                        <option value="true">Oui</option>
+                        <option value="false">Non</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Les prix changent-ils selon les clients ?</label>
+                    <select id="variable_pricing">
+                        <option value="">Sélectionnez</option>
+                        <option value="true">Oui</option>
+                        <option value="false">Non</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Produits vendus en gros et au détail ?</label>
+                    <select id="wholesale_retail">
+                        <option value="">Sélectionnez</option>
+                        <option value="true">Oui</option>
+                        <option value="false">Non</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Acceptez-vous les retours ?</label>
+                    <select id="returns">
+                        <option value="">Sélectionnez</option>
+                        <option value="true">Oui</option>
+                        <option value="false">Non</option>
+                    </select>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <h2>SECTION 15 — Déroulement d'une journée</h2>
+                <div class="form-group">
+                    <label>Décrivez une journée normale</label>
+                    <textarea id="daily_operations" rows="6"></textarea>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <h2>SECTION 16 — Questions ouvertes</h2>
+                <div class="form-group">
+                    <label>1. Comment savez-vous qu'un produit est bientôt en rupture ?</label>
+                    <textarea id="oq1" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>2. Quelle tâche vous fait perdre le plus de temps ?</label>
+                    <textarea id="oq2" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>3. À quel moment faites-vous le plus d'erreurs ?</label>
+                    <textarea id="oq3" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>4. Quelle est la tâche la plus fatigante ?</label>
+                    <textarea id="oq4" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>5. Quelle tâche supprimeriez-vous ?</label>
+                    <textarea id="oq5" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>6. Avez-vous déjà perdu de l'argent à cause d'erreurs de stock ?</label>
+                    <textarea id="oq6" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>7. Quelles informations recherchez-vous le plus souvent ?</label>
+                    <textarea id="oq7" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>8. Qu'est-ce qui pourrait rendre votre travail plus simple ?</label>
+                    <textarea id="oq8" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>9. Autres informations importantes ?</label>
+                    <textarea id="oq9" rows="3"></textarea>
+                </div>
+            </section>
+
+            <!-- Boutons -->
+            <div class="form-actions">
+                <button type="button" onclick="saveForm()" class="btn-save">💾 Enregistrer (brouillon)</button>
+                <button type="button" onclick="submitForm()" class="btn-submit">✅ Soumettre le formulaire</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="js/form.js"></script>
+</body>
+</html>
