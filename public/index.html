@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MSM SmartStock — Formulaire de collecte</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="container">
+    <div class="form-header">
+      <h1>FORMULAIRE DE COLLECTE DES BESOINS</h1>
+      <p class="projet">Projet : <strong>MSM SmartStock</strong></p>
+      <p class="objectif">Questionnaire d'étude des besoins d'une quincaillerie</p>
+      <p class="description">Objectif : Comprendre le fonctionnement actuel de l'entreprise afin de concevoir une solution de gestion adaptée. Il ne s'agit pas d'un test, mais d'un échange pour mieux connaître votre activité.</p>
+    </div>
+
+    <form id="mainForm">
+
+      <!-- SECTION 1 -->
+      <div class="section">
+        <h2>SECTION 1 — Informations générales</h2>
+        <div class="field"><label>1. Nom de l'entreprise</label><input type="text" name="nom_entreprise" /></div>
+        <div class="field"><label>2. Nom du responsable</label><input type="text" name="nom_responsable" /></div>
+        <div class="field"><label>3. Adresse</label><input type="text" name="adresse" /></div>
+        <div class="field"><label>4. Téléphone</label><input type="tel" name="telephone" /></div>
+        <div class="field"><label>5. Email</label><input type="email" name="email" /></div>
+        <div class="field"><label>6. Date de création de l'entreprise</label><input type="text" name="date_creation" /></div>
+        <div class="field">
+          <label>7. Nombre d'employés</label>
+          <div class="checkbox-group">
+            <label><input type="radio" name="nb_employes" value="1" /> 1</label>
+            <label><input type="radio" name="nb_employes" value="2 à 5" /> 2 à 5</label>
+            <label><input type="radio" name="nb_employes" value="6 à 10" /> 6 à 10</label>
+            <label><input type="radio" name="nb_employes" value="Plus de 10" /> Plus de 10</label>
+          </div>
+        </div>
+        <div class="field">
+          <label>8. Quels sont les rôles des employés ?</label>
+          <textarea name="roles_employes" rows="4" placeholder="Ex : Caissier, Magasinier, Livreur, Vendeur..."></textarea>
+        </div>
+      </div>
+
+      <!-- SECTION 2 -->
+      <div class="section">
+        <h2>SECTION 2 — Activités de l'entreprise</h2>
+        <div class="field">
+          <label>Quels types de produits commercialisez-vous ?</label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="types_produits" value="Quincaillerie générale" /> Quincaillerie générale</label>
+            <label><input type="checkbox" name="types_produits" value="Plomberie" /> Plomberie</label>
+            <label><input type="checkbox" name="types_produits" value="Serrurerie" /> Serrurerie</label>
+            <label><input type="checkbox" name="types_produits" value="Électricité" /> Électricité</label>
+            <label><input type="checkbox" name="types_produits" value="Peinture" /> Peinture</label>
+            <label><input type="checkbox" name="types_produits" value="Ciment" /> Ciment</label>
+            <label><input type="checkbox" name="types_produits" value="Fer à béton" /> Fer à béton</label>
+            <label><input type="checkbox" name="types_produits" value="Outillage" /> Outillage</label>
+            <label><input type="checkbox" name="types_produits" value="Matériaux de construction" /> Matériaux de construction</label>
+            <label><input type="checkbox" name="types_produits" value="Autres" /> Autres</label>
+          </div>
+          <textarea name="autres_produits" rows="2" placeholder="Si Autres, précisez..."></textarea>
+        </div>
+      </div>
+
+      <!-- SECTION 3 -->
+      <div class="section">
+        <h2>SECTION 3 — Catégories de produits</h2>
+        <p class="hint">Indiquez toutes les catégories de produits présentes dans votre magasin.</p>
+        <div id="categories-container">
+          <div class="dynamic-row">
+            <input type="text" class="categorie-input" placeholder="Catégorie 1" />
+            <button type="button" class="btn-remove" onclick="removeRow(this)">✕</button>
+          </div>
+        </div>
+        <button type="button" class="btn-add" onclick="addCategorie()">+ Ajouter une catégorie</button>
+      </div>
+
+      <!-- SECTION 4 -->
+      <div class="section">
+        <h2>SECTION 4 — Liste des produits</h2>
+        <p class="hint">Pour chaque catégorie, indiquez les produits vendus.</p>
+        <div id="produits-container">
+          <div class="dynamic-block">
+            <input type="text" class="produit-categorie-input" placeholder="Catégorie" />
+            <textarea class="produit-liste-input" rows="3" placeholder="Produits (un par ligne)"></textarea>
+            <button type="button" class="btn-remove" onclick="removeBlock(this)">✕ Supprimer</button>
+          </div>
+        </div>
+        <button type="button" class="btn-add" onclick="addProduitBlock()">+ Ajouter une catégorie</button>
+      </div>
+
+      <!-- SECTION 5 -->
+      <div class="section">
+        <h2>SECTION 5 — Informations sur chaque produit</h2>
+        <div class="field">
+          <label>Quelles informations souhaitez-vous conserver pour chaque produit ?</label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="infos_souhaitees" value="Nom" /> Nom</label>
+            <label><input type="checkbox" name="infos_souhaitees" value="Catégorie" /> Catégorie</label>
+            <label><input type="checkbox" name="infos_souhaitees" value="Marque" /> Marque</label>
+            <label><input type="checkbox" name="infos_souhaitees" value="Référence" /> Référence</label>
+            <label><input type="checkbox" name="infos_souhaitees" value="Taille / Dimension" /> Taille / Dimension</label>
+            <label><input type="checkbox" name="infos_souhaitees" value="Couleur" /> Couleur</label>
+            <label><input type="checkbox" name="infos_souhaitees" value="Unité de vente" /> Unité de vente</label>
+            <label><input type="checkbox" name="infos_souhaitees" value="Prix d'achat" /> Prix d'achat</label>
+            <label><input type="checkbox" name="infos_souhaitees" value="Prix de vente" /> Prix de vente</label>
+            <label><input type="checkbox" name="infos_souhaitees" value="Fournisseur" /> Fournisseur</label>
+            <label><input type="checkbox" name="infos_souhaitees" value="Quantité disponible" /> Quantité disponible</label>
+            <label><input type="checkbox" name="infos_souhaitees" value="Emplacement dans le magasin" /> Emplacement dans le magasin</label>
+            <label><input type="checkbox" name="infos_souhaitees" value="Date d'achat" /> Date d'achat</label>
+            <label><input type="checkbox" name="infos_souhaitees" value="Observations" /> Observations</label>
+          </div>
+          <textarea name="autres_infos" rows="2" placeholder="Autres informations..."></textarea>
+        </div>
+      </div>
+
+      <!-- SECTION 6 -->
+      <div class="section">
+        <h2>SECTION 6 — Unités de vente</h2>
+        <div class="field">
+          <label>Quels types d'unités utilisez-vous ?</label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="unites_vente" value="Pièce" /> Pièce</label>
+            <label><input type="checkbox" name="unites_vente" value="Sac" /> Sac</label>
+            <label><input type="checkbox" name="unites_vente" value="Carton" /> Carton</label>
+            <label><input type="checkbox" name="unites_vente" value="Paquet" /> Paquet</label>
+            <label><input type="checkbox" name="unites_vente" value="Boîte" /> Boîte</label>
+            <label><input type="checkbox" name="unites_vente" value="Rouleau" /> Rouleau</label>
+            <label><input type="checkbox" name="unites_vente" value="Litre" /> Litre</label>
+            <label><input type="checkbox" name="unites_vente" value="Kilogramme" /> Kilogramme</label>
+            <label><input type="checkbox" name="unites_vente" value="Mètre" /> Mètre</label>
+            <label><input type="checkbox" name="unites_vente" value="Barre" /> Barre</label>
+            <label><input type="checkbox" name="unites_vente" value="Autres" /> Autres</label>
+          </div>
+          <textarea name="autres_unites" rows="2" placeholder="Si Autres, précisez..."></textarea>
+        </div>
+      </div>
+
+      <!-- SECTION 7 -->
+      <div class="section">
+        <h2>SECTION 7 — Fonctionnement actuel</h2>
+        <div class="field">
+          <label>Comment gérez-vous actuellement votre stock ?</label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="gestion_stock_methode" value="Cahier" /> Cahier</label>
+            <label><input type="checkbox" name="gestion_stock_methode" value="Mémoire" /> Mémoire</label>
+            <label><input type="checkbox" name="gestion_stock_methode" value="Excel" /> Excel</label>
+            <label><input type="checkbox" name="gestion_stock_methode" value="Logiciel" /> Logiciel</label>
+            <label><input type="checkbox" name="gestion_stock_methode" value="Aucun système" /> Aucun système</label>
+          </div>
+          <textarea name="gestion_stock_explication" rows="3" placeholder="Expliquez votre méthode..."></textarea>
+        </div>
+      </div>
+
+      <!-- SECTION 8 -->
+      <div class="section">
+        <h2>SECTION 8 — Gestion des achats</h2>
+        <div class="field"><label>Qui passe les commandes ?</label><input type="text" name="achat_qui_commande" /></div>
+        <div class="field"><label>À qui achetez-vous ?</label><textarea name="achat_aupres_de" rows="2"></textarea></div>
+        <div class="field"><label>Comment enregistrez-vous les achats ?</label><textarea name="achat_enregistrement" rows="2"></textarea></div>
+        <div class="field">
+          <label>Recevez-vous une facture ?</label>
+          <div class="checkbox-group">
+            <label><input type="radio" name="achat_facture" value="Oui" /> Oui</label>
+            <label><input type="radio" name="achat_facture" value="Non" /> Non</label>
+          </div>
+        </div>
+        <div class="field"><label>Comment savez-vous qu'il faut recommander un produit ?</label><textarea name="achat_seuil_reapprovisionnement" rows="2"></textarea></div>
+      </div>
+
+      <!-- SECTION 9 -->
+      <div class="section">
+        <h2>SECTION 9 — Gestion des ventes</h2>
+        <div class="field"><label>Décrivez comment se déroule une vente.</label><textarea name="vente_deroulement" rows="3"></textarea></div>
+        <div class="field"><label>Qui sert le client ?</label><input type="text" name="vente_qui_sert" /></div>
+        <div class="field"><label>Qui encaisse le paiement ?</label><input type="text" name="vente_qui_encaisse" /></div>
+        <div class="field"><label>Comment notez-vous les ventes ?</label><textarea name="vente_notation" rows="3"></textarea></div>
+      </div>
+
+      <!-- SECTION 10 -->
+      <div class="section">
+        <h2>SECTION 10 — Gestion du stock</h2>
+        <div class="field">
+          <label>Quand mettez-vous le stock à jour ?</label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="stock_maj_frequence" value="Après chaque vente" /> Après chaque vente</label>
+            <label><input type="checkbox" name="stock_maj_frequence" value="À la fin de la journée" /> À la fin de la journée</label>
+            <label><input type="checkbox" name="stock_maj_frequence" value="Une fois par semaine" /> Une fois par semaine</label>
+            <label><input type="checkbox" name="stock_maj_frequence" value="Jamais" /> Jamais</label>
+            <label><input type="checkbox" name="stock_maj_frequence" value="Autre" /> Autre</label>
+          </div>
+          <textarea name="stock_maj_autre" rows="2" placeholder="Précisez si autre..."></textarea>
+        </div>
+        <div class="field"><label>Comment connaissez-vous la quantité restante d'un produit ?</label><textarea name="stock_connaissance_quantite" rows="3"></textarea></div>
+      </div>
+
+      <!-- SECTION 11 -->
+      <div class="section">
+        <h2>SECTION 11 — Les fournisseurs</h2>
+        <div class="field"><label>Combien de fournisseurs avez-vous ?</label><input type="text" name="fournisseurs_nombre" /></div>
+        <div class="field">
+          <label>Quelles informations conservez-vous sur eux ?</label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="fournisseurs_infos" value="Nom" /> Nom</label>
+            <label><input type="checkbox" name="fournisseurs_infos" value="Téléphone" /> Téléphone</label>
+            <label><input type="checkbox" name="fournisseurs_infos" value="Adresse" /> Adresse</label>
+            <label><input type="checkbox" name="fournisseurs_infos" value="Produits fournis" /> Produits fournis</label>
+            <label><input type="checkbox" name="fournisseurs_infos" value="Prix" /> Prix</label>
+            <label><input type="checkbox" name="fournisseurs_infos" value="Historique des achats" /> Historique des achats</label>
+            <label><input type="checkbox" name="fournisseurs_infos" value="Autres" /> Autres</label>
+          </div>
+          <textarea name="fournisseurs_autres" rows="2" placeholder="Autres informations..."></textarea>
+        </div>
+      </div>
+
+      <!-- SECTION 12 -->
+      <div class="section">
+        <h2>SECTION 12 — Les employés</h2>
+        <div class="field"><label>Combien de personnes vendent les produits ?</label><input type="text" name="employes_nb_vendeurs" /></div>
+        <div class="field"><label>Qui peut modifier le stock ?</label><input type="text" name="employes_modif_stock" /></div>
+        <div class="field"><label>Qui décide des prix ?</label><textarea name="employes_decide_prix" rows="2"></textarea></div>
+      </div>
+
+      <!-- SECTION 13 -->
+      <div class="section">
+        <h2>SECTION 13 — Les difficultés rencontrées</h2>
+        <div class="field">
+          <label>Parmi les difficultés suivantes, lesquelles rencontrez-vous ?</label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="difficultes" value="Difficulté à connaître le stock réel" /> Difficulté à connaître le stock réel</label>
+            <label><input type="checkbox" name="difficultes" value="Produits en rupture" /> Produits en rupture</label>
+            <label><input type="checkbox" name="difficultes" value="Produits perdus" /> Produits perdus</label>
+            <label><input type="checkbox" name="difficultes" value="Produits volés" /> Produits volés</label>
+            <label><input type="checkbox" name="difficultes" value="Oublis" /> Oublis</label>
+            <label><input type="checkbox" name="difficultes" value="Mauvais calculs" /> Mauvais calculs</label>
+            <label><input type="checkbox" name="difficultes" value="Difficulté à retrouver un produit" /> Difficulté à retrouver un produit</label>
+            <label><input type="checkbox" name="difficultes" value="Trop de temps pour servir les clients" /> Trop de temps pour servir les clients</label>
+            <label><input type="checkbox" name="difficultes" value="Difficulté à former un nouvel employé" /> Difficulté à former un nouvel employé</label>
+            <label><input type="checkbox" name="difficultes" value="Autres" /> Autres</label>
+          </div>
+          <textarea name="difficultes_autres" rows="2" placeholder="Si Autres, précisez..."></textarea>
+        </div>
+        <div class="field"><label>Quelle est votre plus grande difficulté aujourd'hui ?</label><textarea name="plus_grande_difficulte" rows="3"></textarea></div>
+      </div>
+
+      <!-- SECTION 14 -->
+      <div class="section">
+        <h2>SECTION 14 — Les cas particuliers</h2>
+        <div class="field">
+          <label>Vendez-vous parfois à crédit ?</label>
+          <div class="checkbox-group">
+            <label><input type="radio" name="vente_credit" value="Oui" /> Oui</label>
+            <label><input type="radio" name="vente_credit" value="Non" /> Non</label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Les prix changent-ils selon les clients ?</label>
+          <div class="checkbox-group">
+            <label><input type="radio" name="prix_variables" value="Oui" /> Oui</label>
+            <label><input type="radio" name="prix_variables" value="Non" /> Non</label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Certains produits sont-ils vendus en gros et au détail ?</label>
+          <div class="checkbox-group">
+            <label><input type="radio" name="gros_detail" value="Oui" /> Oui</label>
+            <label><input type="radio" name="gros_detail" value="Non" /> Non</label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Acceptez-vous les retours de marchandises ?</label>
+          <div class="checkbox-group">
+            <label><input type="radio" name="retours_marchandises" value="Oui" /> Oui</label>
+            <label><input type="radio" name="retours_marchandises" value="Non" /> Non</label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Les employés peuvent-ils modifier les prix ?</label>
+          <div class="checkbox-group">
+            <label><input type="radio" name="employes_modif_prix" value="Oui" /> Oui</label>
+            <label><input type="radio" name="employes_modif_prix" value="Non" /> Non</label>
+          </div>
+        </div>
+        <div class="field"><label>Y a-t-il des produits très sensibles ?</label><textarea name="produits_sensibles" rows="2"></textarea></div>
+      </div>
+
+      <!-- SECTION 15 -->
+      <div class="section">
+        <h2>SECTION 15 — Déroulement d'une journée</h2>
+        <div class="field"><label>À quelle heure ouvrez-vous ?</label><input type="text" name="journee_heure_ouverture" /></div>
+        <div class="field"><label>Quelle est la première tâche que vous effectuez ?</label><textarea name="journee_premiere_tache" rows="2"></textarea></div>
+        <div class="field"><label>Comment recevez-vous les nouvelles marchandises ?</label><textarea name="journee_reception_marchandises" rows="2"></textarea></div>
+        <div class="field"><label>Comment les rangez-vous ?</label><textarea name="journee_rangement" rows="2"></textarea></div>
+        <div class="field"><label>Comment se déroule une vente ?</label><textarea name="journee_deroulement_vente" rows="2"></textarea></div>
+        <div class="field"><label>Comment se passe la fermeture de la boutique ?</label><textarea name="journee_fermeture" rows="2"></textarea></div>
+      </div>
+
+      <!-- SECTION 16 -->
+      <div class="section">
+        <h2>SECTION 16 — Questions ouvertes</h2>
+        <div class="field"><label>1. Comment savez-vous qu'un produit est bientôt en rupture ?</label><textarea name="q1_rupture" rows="2"></textarea></div>
+        <div class="field"><label>2. Quelle tâche vous fait perdre le plus de temps chaque jour ?</label><textarea name="q2_perte_temps" rows="2"></textarea></div>
+        <div class="field"><label>3. À quel moment faites-vous le plus d'erreurs ?</label><textarea name="q3_moment_erreurs" rows="2"></textarea></div>
+        <div class="field"><label>4. Quelle est la tâche la plus fatigante dans la gestion de votre commerce ?</label><textarea name="q4_tache_fatigante" rows="2"></textarea></div>
+        <div class="field"><label>5. Si vous pouviez supprimer une seule tâche de votre journée, laquelle serait-ce ?</label><textarea name="q5_tache_a_supprimer" rows="2"></textarea></div>
+        <div class="field"><label>6. Avez-vous déjà perdu de l'argent à cause d'une erreur de stock ? Expliquez.</label><textarea name="q6_perte_argent" rows="2"></textarea></div>
+        <div class="field"><label>7. Quelles informations recherchez-vous le plus souvent pendant la journée ?</label><textarea name="q7_infos_recherchees" rows="2"></textarea></div>
+        <div class="field"><label>8. Selon vous, qu'est-ce qui pourrait rendre votre travail plus simple ?</label><textarea name="q8_simplification" rows="2"></textarea></div>
+        <div class="field"><label>9. Y a-t-il d'autres informations importantes que vous souhaitez partager ?</label><textarea name="q9_autres_infos" rows="2"></textarea></div>
+      </div>
+
+      <!-- BOUTON SUBMIT -->
+      <div class="submit-area">
+        <button type="submit" class="btn-submit">Envoyer le formulaire</button>
+        <p id="form-message"></p>
+      </div>
+
+    </form>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

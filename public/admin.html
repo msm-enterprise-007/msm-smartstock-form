@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MSM SmartStock — Administration</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f6f9;
+      color: #333;
+    }
+
+    /* LOGIN */
+    #login-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .login-box {
+      background: #fff;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+    }
+
+    .login-box h1 {
+      font-size: 1.2rem;
+      color: #1a3c5e;
+      margin-bottom: 8px;
+    }
+
+    .login-box p {
+      font-size: 0.88rem;
+      color: #888;
+      margin-bottom: 24px;
+    }
+
+    .login-box input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #d0d7e2;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      margin-bottom: 14px;
+    }
+
+    .login-box button {
+      width: 100%;
+      padding: 12px;
+      background: #1a3c5e;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .login-box button:hover { background: #14304e; }
+
+    #login-error {
+      color: #c0392b;
+      font-size: 0.88rem;
+      margin-top: 10px;
+    }
+
+    /* DASHBOARD */
+    #dashboard { display: none; }
+
+    .top-bar {
+      background: #1a3c5e;
+      color: #fff;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .top-bar h1 { font-size: 1.1rem; }
+
+    .top-bar button {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      padding: 6px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.88rem;
+    }
+
+    .top-bar button:hover { background: rgba(255,255,255,0.25); }
+
+    .dashboard-body { padding: 30px 32px; }
+
+    .stats-bar {
+      background: #fff;
+      border-radius: 8px;
+      padding: 16px 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      font-size: 0.95rem;
+      color: #555;
+    }
+
+    .stats-bar span {
+      font-weight: 700;
+      color: #1a3c5e;
+      font-size: 1.1rem;
+    }
+
+    /* TABLE */
+    .table-wrapper {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    thead tr {
+      background: #1a3c5e;
+      color: #fff;
+    }
+
+    thead th {
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #f0f2f5;
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover { background: #f7f9fc; }
+
+    tbody td {
+      padding: 12px 16px;
+      vertical-align: middle;
+    }
+
+    .btn-voir {
+      background: #1a3c5e;
+      color: #fff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    .btn-voir:hover { background: #14304e; }
+
+    /* MODAL */
+    #modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 100;
+      overflow-y: auto;
+      padding: 30px 16px;
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: 10px;
+      max-width: 800px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    .modal-header {
+      background: #1a3c5e;
+      color: #fff;
+      padding: 20px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h2 { font-size: 1.05rem; }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.4rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .modal-body { padding: 28px; }
+
+    .modal-section {
+      margin-bottom: 24px;
+    }
+
+    .modal-section h3 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #1a3c5e;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #e8ecf0;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .detail-item {
+      background: #f7f9fc;
+      border-radius: 6px;
+      padding: 10px 14px;
+    }
+
+    .detail-item .label {
+      font-size: 0.78rem;
+      color: #888;
+      margin-bottom: 4px;
+    }
+
+    .detail-item .value {
+      font-size: 0.9rem;
+      color: #333;
+      font-weight: 500;
+      word-break: break-word;
+    }
+
+    .detail-item.full {
+      grid-column: 1 / -1;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      background: #dce8f5;
+      color: #1a3c5e;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 500;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #888;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 600px) {
+      .detail-grid { grid-template-columns: 1fr; }
+      .dashboard-body { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ÉCRAN DE CONNEXION -->
+  <div id="login-screen">
+    <div class="login-box">
+      <h1>MSM SmartStock</h1>
+      <p>Accès administration</p>
+      <input type="password" id="password-input" placeholder="Mot de passe" />
+      <button onclick="login()">Se connecter</button>
+      <p id="login-error"></p>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard">
+    <div class="top-bar">
+      <h1>MSM SmartStock — Tableau de bord</h1>
+      <button onclick="logout()">Déconnexion</button>
+    </div>
+    <div class="dashboard-body">
+      <div class="stats-bar" id="stats-bar">Chargement...</div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Entreprise</th>
+              <th>Responsable</th>
+              <th>Téléphone</th>
+              <th>Email</th>
+              <th>Date de soumission</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="responses-table-body">
+            <tr><td colspan="7" class="loading">Chargement des données...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DÉTAIL -->
+  <div id="modal-overlay" onclick="closeModalOutside(event)">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modal-title">Détail de la réponse</h2>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <div class="loading">Chargement...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ADMIN_PASSWORD = "msm2025admin";
+
+    function login() {
+      const val = document.getElementById("password-input").value;
+      if (val === ADMIN_PASSWORD) {
+        document.getElementById("login-screen").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+        loadResponses();
+      } else {
+        document.getElementById("login-error").textContent = "Mot de passe incorrect.";
+      }
+    }
+
+    document.getElementById("password-input").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") login();
+    });
+
+    function logout() {
+      document.getElementById("dashboard").style.display = "none";
+      document.getElementById("login-screen").style.display = "flex";
+      document.getElementById("password-input").value = "";
+    }
+
+    async function loadResponses() {
+      try {
+        const res = await fetch("/api/responses");
+        const result = await res.json();
+        if (!result.success) throw new Error();
+
+        const data = result.data;
+        const stats = document.getElementById("stats-bar");
+        stats.innerHTML = `Total des réponses reçues : <span>${data.length}</span>`;
+
+        const tbody = document.getElementById("responses-table-body");
+        if (data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" class="loading">Aucune réponse pour le moment.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = data.map((row, i) => `
+          <tr>
+            <td>${i + 1}</td>
+            <td>${row.nom_entreprise || "—"}</td>
+            <td>${row.nom_responsable || "—"}</td>
+            <td>${row.telephone || "—"}</td>
+            <td>${row.email || "—"}</td>
+            <td>${new Date(row.submitted_at).toLocaleString("fr-FR")}</td>
+            <td><button class="btn-voir" onclick="viewDetail(${row.id})">Voir</button></td>
+          </tr>
+        `).join("");
+
+      } catch (err) {
+        document.getElementById("responses-table-body").innerHTML =
+          `<tr><td colspan="7" class="loading">Erreur lors du chargement.</td></tr>`;
+      }
+    }
+
+    async function viewDetail(id) {
+      document.getElementById("modal-overlay").style.display = "block";
+      document.getElementById("modal-body").innerHTML = `<div class="loading">Chargement...</div>`;
+
+      try {
+        const res = await fetch(`/api/responses/${id}`);
+        const result = await res.json();
+        if (!result.success) throw new Error();
+
+        const d = result.data;
+        const g = d.general || {};
+        const a = d.activities || {};
+        const pd = d.productDetails || {};
+        const op = d.operations || {};
+        const ci = d.contextInfo || {};
+        const oq = d.openQuestions || {};
+
+        document.getElementById("modal-title").textContent =
+          `${g.nom_entreprise || "Réponse"} — Détail complet`;
+
+        const tags = (val) => {
+          if (!val) return "—";
+          try {
+            const arr = typeof val === "string" ? JSON.parse(val) : val;
+            if (!arr.length) return "—";
+            return `<div class="tag-list">${arr.map(v => `<span class="tag">${v}</span>`).join("")}</div>`;
+          } catch { return val; }
+        };
+
+        const txt = (val) => val || "—";
+
+        document.getElementById("modal-body").innerHTML = `
+
+          <div class="modal-section">
+            <h3>Section 1 — Informations générales</h3>
+            <div class="detail-grid">
+              <div class="detail-item"><div class="label">Entreprise</div><div class="value">${txt(g.nom_entreprise)}</div></div>
+              <div class="detail-item"><div class="label">Responsable</div><div class="value">${txt(g.nom_responsable)}</div></div>
+              <div class="detail-item"><div class="label">Téléphone</div><div class="value">${txt(g.telephone)}</div></div>
+              <div class="detail-item"><div class="label">Email</div><div class="value">${txt(g.email)}</div></div>
+              <div class="detail-item full"><div class="label">Adresse</div><div class="value">${txt(g.adresse)}</div></div>
+              <div class="detail-item"><div class="label">Date de création</div><div class="value">${txt(g.date_creation)}</div></div>
+              <div class="detail-item"><div class="label">Nombre d'employés</div><div class="value">${txt(g.nb_employes)}</div></div>
+              <div class="detail-item full"><div class="label">Rôles des employés</div><div class="value">${txt(g.roles_employes)}</div></div>
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <h3>Section 2 — Activités</h3>
+            <div class="detail-grid">
+              <div class="detail-item full"><div class="label">Types de produits</div><div class="value">${tags(a.types_produits)}</div></div>
+              <div class="detail-item full"><div class="label">Autres produits</div><div class="value">${txt(a.autres_produits)}</div></div>
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <h3>Section 3 & 4 — Catégories et produits</h3>
+            <div class="detail-grid">
+              <div class="detail-item full">
+                <div class="label">Catégories</div>
+                <div class="value">
+                  ${d.categories && d.categories.length > 0
+                    ? d.categories.map(c => `<span class="tag">${c.categorie}</span>`).join(" ")
+                    : "—"}
+                </div>
+              </div>
+              <div class="detail-item full">
+                <div class="label">Produits par catégorie</div>
+                <div class="value">
+                  ${d.productList && d.productList.length > 0
+                    ? d.productList.map(p => `<strong>${p.categorie}</strong> : ${p.produits}`).join("<br/>")
+                    : "—"}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <h3>Section 5 & 6 — Infos produits & unités</h3>
+            <div class="detail-grid">
+              <div class="detail-item full"><div class="label">Informations souhaitées</div><div class="value">${tags(pd.infos_souhaitees)}</div></div>
+              <div class="detail-item full"><div class="label">Autres infos</div><div class="value">${txt(pd.autres_infos)}</div></div>
+              <div class="detail-item full"><div class="label">Unités de vente</div><div class="value">${tags(pd.unites_vente)}</div></div>
+              <div class="detail-item full"><div class="label">Autres unités</div><div class="value">${txt(pd.autres_unites)}</div></div>
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <h3>Sections 7 à 12 — Opérations</h3>
+            <div class="detail-grid">
+              <div class="detail-item full"><div class="label">Méthode de gestion du stock</div><div class="value">${tags(op.gestion_stock_methode)}</div></div>
+              <div class="detail-item full"><div class="label">Explication</div><div class="value">${txt(op.gestion_stock_explication)}</div></div>
+              <div class="detail-item"><div class="label">Qui passe les commandes</div><div class="value">${txt(op.achat_qui_commande)}</div></div>
+              <div class="detail-item"><div class="label">Facture reçue</div><div class="value">${txt(op.achat_facture)}</div></div>
+              <div class="detail-item full"><div class="label">Auprès de qui achète-t-on</div><div class="value">${txt(op.achat_aupres_de)}</div></div>
+              <div class="detail-item full"><div class="label">Enregistrement des achats</div><div class="value">${txt(op.achat_enregistrement)}</div></div>
+              <div class="detail-item full"><div class="label">Seuil de réapprovisionnement</div><div class="value">${txt(op.achat_seuil_reapprovisionnement)}</div></div>
+              <div class="detail-item full"><div class="label">Déroulement d'une vente</div><div class="value">${txt(op.vente_deroulement)}</div></div>
+              <div class="detail-item"><div class="label">Qui sert le client</div><div class="value">${txt(op.vente_qui_sert)}</div></div>
+              <div class="detail-item"><div class="label">Qui encaisse</div><div class="value">${txt(op.vente_qui_encaisse)}</div></div>
+              <div class="detail-item full"><div class="label">Notation des ventes</div><div class="value">${txt(op.vente_notation)}</div></div>
+              <div class="detail-item full"><div class="label">Fréquence MAJ stock</div><div class="value">${tags(op.stock_maj_frequence)}</div></div>
+              <div class="detail-item full"><div class="label">Connaissance quantité restante</div><div class="value">${txt(op.stock_connaissance_quantite)}</div></div>
+              <div class="detail-item"><div class="label">Nombre de fournisseurs</div><div class="value">${txt(op.fournisseurs_nombre)}</div></div>
+              <div class="detail-item full"><div class="label">Infos conservées sur fournisseurs</div><div class="value">${tags(op.fournisseurs_infos)}</div></div>
+              <div class="detail-item"><div class="label">Nb vendeurs</div><div class="value">${txt(op.employes_nb_vendeurs)}</div></div>
+              <div class="detail-item"><div class="label">Qui modifie le stock</div><div class="value">${txt(op.employes_modif_stock)}</div></div>
+              <div class="detail-item full"><div class="label">Qui décide des prix</div><div class="value">${txt(op.employes_decide_prix)}</div></div>
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <h3>Sections 13 à 15 — Difficultés & contexte</h3>
+            <div class="detail-grid">
+              <div class="detail-item full"><div class="label">Difficultés rencontrées</div><div class="value">${tags(ci.difficultes)}</div></div>
+              <div class="detail-item full"><div class="label">Plus grande difficulté</div><div class="value">${txt(ci.plus_grande_difficulte)}</div></div>
+              <div class="detail-item"><div class="label">Vente à crédit</div><div class="value">${txt(ci.vente_credit)}</div></div>
+              <div class="detail-item"><div class="label">Prix variables</div><div class="value">${txt(ci.prix_variables)}</div></div>
+              <div class="detail-item"><div class="label">Gros et détail</div><div class="value">${txt(ci.gros_detail)}</div></div>
+              <div class="detail-item"><div class="label">Retours marchandises</div><div class="value">${txt(ci.retours_marchandises)}</div></div>
+              <div class="detail-item"><div class="label">Employés modifient les prix</div><div class="value">${txt(ci.employes_modif_prix)}</div></div>
+              <div class="detail-item full"><div class="label">Produits sensibles</div><div class="value">${txt(ci.produits_sensibles)}</div></div>
+              <div class="detail-item"><div class="label">Heure d'ouverture</div><div class="value">${txt(ci.journee_heure_ouverture)}</div></div>
+              <div class="detail-item full"><div class="label">Première tâche</div><div class="value">${txt(ci.journee_premiere_tache)}</div></div>
+              <div class="detail-item full"><div class="label">Réception marchandises</div><div class="value">${txt(ci.journee_reception_marchandises)}</div></div>
+              <div class="detail-item full"><div class="label">Rangement</div><div class="value">${txt(ci.journee_rangement)}</div></div>
+              <div class="detail-item full"><div class="label">Déroulement vente (journée)</div><div class="value">${txt(ci.journee_deroulement_vente)}</div></div>
+              <div class="detail-item full"><div class="label">Fermeture</div><div class="value">${txt(ci.journee_fermeture)}</div></div>
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <h3>Section 16 — Questions ouvertes</h3>
+            <div class="detail-grid">
+              <div class="detail-item full"><div class="label">1. Rupture de stock</div><div class="value">${txt(oq.q1_rupture)}</div></div>
+              <div class="detail-item full"><div class="label">2. Perte de temps</div><div class="value">${txt(oq.q2_perte_temps)}</div></div>
+              <div class="detail-item full"><div class="label">3. Moment des erreurs</div><div class="value">${txt(oq.q3_moment_erreurs)}</div></div>
+              <div class="detail-item full"><div class="label">4. Tâche la plus fatigante</div><div class="value">${txt(oq.q4_tache_fatigante)}</div></div>
+              <div class="detail-item full"><div class="label">5. Tâche à supprimer</div><div class="value">${txt(oq.q5_tache_a_supprimer)}</div></div>
+              <div class="detail-item full"><div class="label">6. Perte d'argent</div><div class="value">${txt(oq.q6_perte_argent)}</div></div>
+              <div class="detail-item full"><div class="label">7. Infos recherchées</div><div class="value">${txt(oq.q7_infos_recherchees)}</div></div>
+              <div class="detail-item full"><div class="label">8. Simplification</div><div class="value">${txt(oq.q8_simplification)}</div></div>
+              <div class="detail-item full"><div class="label">9. Autres infos</div><div class="value">${txt(oq.q9_autres_infos)}</div></div>
+            </div>
+          </div>
+        `;
+
+      } catch (err) {
+        document.getElementById("modal-body").innerHTML =
+          `<div class="loading">Erreur lors du chargement du détail.</div>`;
+      }
+    }
+
+    function closeModal() {
+      document.getElementById("modal-overlay").style.display = "none";
+    }
+
+    function closeModalOutside(e) {
+      if (e.target === document.getElementById("modal-overlay")) closeModal();
+    }
+  </script>
+
+</body>
+</html>
