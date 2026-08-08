@@ -1,11 +1,4 @@
-const express = require("express");
 const mysql = require("mysql2/promise");
-const cors = require("cors");
-require("dotenv").config();
-
-const app = express();
-app.use(cors());
-app.use(express.json());
 
 const dbConfig = {
   host: process.env.MYSQL_HOST,
@@ -15,151 +8,71 @@ const dbConfig = {
   database: process.env.MYSQL_DATABASE,
 };
 
-app.post("/api/submit", async (req, res) => {
+export default async function handler(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  if (req.method === "OPTIONS") return res.status(200).end();
+  if (req.method !== "POST") return res.status(405).json({ error: "Méthode non autorisée" });
+
   const data = req.body;
   const conn = await mysql.createConnection(dbConfig);
 
   try {
     await conn.beginTransaction();
 
-    // Table principale
-    const [result] = await conn.execute(
-      "INSERT INTO responses () VALUES ()"
-    );
+    const [result] = await conn.execute("INSERT INTO responses () VALUES ()");
     const responseId = result.insertId;
 
-    // Section 1 — Informations générales
     await conn.execute(
       `INSERT INTO general_info 
         (response_id, nom_entreprise, nom_responsable, adresse, telephone, email, date_creation, nb_employes, roles_employes)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        responseId,
-        data.nom_entreprise || null,
-        data.nom_responsable || null,
-        data.adresse || null,
-        data.telephone || null,
-        data.email || null,
-        data.date_creation || null,
-        data.nb_employes || null,
-        data.roles_employes || null,
-      ]
+      [responseId, data.nom_entreprise||null, data.nom_responsable||null, data.adresse||null, data.telephone||null, data.email||null, data.date_creation||null, data.nb_employes||null, data.roles_employes||null]
     );
 
-    // Section 2 — Activités
     await conn.execute(
       `INSERT INTO activities (response_id, types_produits, autres_produits) VALUES (?, ?, ?)`,
-      [
-        responseId,
-        JSON.stringify(data.types_produits || []),
-        data.autres_produits || null,
-      ]
+      [responseId, JSON.stringify(data.types_produits||[]), data.autres_produits||null]
     );
 
-    // Section 3 — Catégories (dynamique)
     if (data.categories && data.categories.length > 0) {
       for (const cat of data.categories) {
-        await conn.execute(
-          `INSERT INTO product_categories (response_id, categorie) VALUES (?, ?)`,
-          [responseId, cat]
-        );
+        await conn.execute(`INSERT INTO product_categories (response_id, categorie) VALUES (?, ?)`, [responseId, cat]);
       }
     }
 
-    // Section 4 — Produits par catégorie (dynamique)
     if (data.product_list && data.product_list.length > 0) {
       for (const item of data.product_list) {
-        await conn.execute(
-          `INSERT INTO product_list (response_id, categorie, produits) VALUES (?, ?, ?)`,
-          [responseId, item.categorie, item.produits]
-        );
+        await conn.execute(`INSERT INTO product_list (response_id, categorie, produits) VALUES (?, ?, ?)`, [responseId, item.categorie, item.produits]);
       }
     }
 
-    // Section 5 & 6 — Infos produits + unités
     await conn.execute(
       `INSERT INTO product_details (response_id, infos_souhaitees, autres_infos, unites_vente, autres_unites) VALUES (?, ?, ?, ?, ?)`,
-      [
-        responseId,
-        JSON.stringify(data.infos_souhaitees || []),
-        data.autres_infos || null,
-        JSON.stringify(data.unites_vente || []),
-        data.autres_unites || null,
-      ]
+      [responseId, JSON.stringify(data.infos_souhaitees||[]), data.autres_infos||null, JSON.stringify(data.unites_vente||[]), data.autres_unites||null]
     );
 
-    // Sections 7 à 12 — Opérations
     await conn.execute(
       `INSERT INTO operations 
         (response_id, gestion_stock_methode, gestion_stock_explication, achat_qui_commande, achat_aupres_de, achat_enregistrement, achat_facture, achat_seuil_reapprovisionnement, vente_deroulement, vente_qui_sert, vente_qui_encaisse, vente_notation, stock_maj_frequence, stock_maj_autre, stock_connaissance_quantite, fournisseurs_nombre, fournisseurs_infos, fournisseurs_autres, employes_nb_vendeurs, employes_modif_stock, employes_decide_prix)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        responseId,
-        JSON.stringify(data.gestion_stock_methode || []),
-        data.gestion_stock_explication || null,
-        data.achat_qui_commande || null,
-        data.achat_aupres_de || null,
-        data.achat_enregistrement || null,
-        data.achat_facture || null,
-        data.achat_seuil_reapprovisionnement || null,
-        data.vente_deroulement || null,
-        data.vente_qui_sert || null,
-        data.vente_qui_encaisse || null,
-        data.vente_notation || null,
-        JSON.stringify(data.stock_maj_frequence || []),
-        data.stock_maj_autre || null,
-        data.stock_connaissance_quantite || null,
-        data.fournisseurs_nombre || null,
-        JSON.stringify(data.fournisseurs_infos || []),
-        data.fournisseurs_autres || null,
-        data.employes_nb_vendeurs || null,
-        data.employes_modif_stock || null,
-        data.employes_decide_prix || null,
-      ]
+      [responseId, JSON.stringify(data.gestion_stock_methode||[]), data.gestion_stock_explication||null, data.achat_qui_commande||null, data.achat_aupres_de||null, data.achat_enregistrement||null, data.achat_facture||null, data.achat_seuil_reapprovisionnement||null, data.vente_deroulement||null, data.vente_qui_sert||null, data.vente_qui_encaisse||null, data.vente_notation||null, JSON.stringify(data.stock_maj_frequence||[]), data.stock_maj_autre||null, data.stock_connaissance_quantite||null, data.fournisseurs_nombre||null, JSON.stringify(data.fournisseurs_infos||[]), data.fournisseurs_autres||null, data.employes_nb_vendeurs||null, data.employes_modif_stock||null, data.employes_decide_prix||null]
     );
 
-    // Sections 13 à 15 — Contexte
     await conn.execute(
       `INSERT INTO context_info 
         (response_id, difficultes, difficultes_autres, plus_grande_difficulte, vente_credit, prix_variables, gros_detail, retours_marchandises, employes_modif_prix, produits_sensibles, journee_heure_ouverture, journee_premiere_tache, journee_reception_marchandises, journee_rangement, journee_deroulement_vente, journee_fermeture)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        responseId,
-        JSON.stringify(data.difficultes || []),
-        data.difficultes_autres || null,
-        data.plus_grande_difficulte || null,
-        data.vente_credit || null,
-        data.prix_variables || null,
-        data.gros_detail || null,
-        data.retours_marchandises || null,
-        data.employes_modif_prix || null,
-        data.produits_sensibles || null,
-        data.journee_heure_ouverture || null,
-        data.journee_premiere_tache || null,
-        data.journee_reception_marchandises || null,
-        data.journee_rangement || null,
-        data.journee_deroulement_vente || null,
-        data.journee_fermeture || null,
-      ]
+      [responseId, JSON.stringify(data.difficultes||[]), data.difficultes_autres||null, data.plus_grande_difficulte||null, data.vente_credit||null, data.prix_variables||null, data.gros_detail||null, data.retours_marchandises||null, data.employes_modif_prix||null, data.produits_sensibles||null, data.journee_heure_ouverture||null, data.journee_premiere_tache||null, data.journee_reception_marchandises||null, data.journee_rangement||null, data.journee_deroulement_vente||null, data.journee_fermeture||null]
     );
 
-    // Section 16 — Questions ouvertes
     await conn.execute(
       `INSERT INTO open_questions 
         (response_id, q1_rupture, q2_perte_temps, q3_moment_erreurs, q4_tache_fatigante, q5_tache_a_supprimer, q6_perte_argent, q7_infos_recherchees, q8_simplification, q9_autres_infos)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        responseId,
-        data.q1_rupture || null,
-        data.q2_perte_temps || null,
-        data.q3_moment_erreurs || null,
-        data.q4_tache_fatigante || null,
-        data.q5_tache_a_supprimer || null,
-        data.q6_perte_argent || null,
-        data.q7_infos_recherchees || null,
-        data.q8_simplification || null,
-        data.q9_autres_infos || null,
-      ]
+      [responseId, data.q1_rupture||null, data.q2_perte_temps||null, data.q3_moment_erreurs||null, data.q4_tache_fatigante||null, data.q5_tache_a_supprimer||null, data.q6_perte_argent||null, data.q7_infos_recherchees||null, data.q8_simplification||null, data.q9_autres_infos||null]
     );
 
     await conn.commit();
@@ -172,6 +85,4 @@ app.post("/api/submit", async (req, res) => {
   } finally {
     await conn.end();
   }
-});
-
-module.exports = app;
+}

@@ -396,7 +396,7 @@
       document.getElementById("modal-body").innerHTML = `<div class="loading">Chargement...</div>`;
 
       try {
-        const res = await fetch(`/api/responses/${id}`);
+        const res = await fetch(`/api/responses?id=${id}`);
         const result = await res.json();
         if (!result.success) throw new Error();
 
