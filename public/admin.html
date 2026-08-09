@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MSM SmartStock — Administration</title>
+  <title>MSM SmartStock - Administration</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -294,7 +294,7 @@
   <!-- DASHBOARD -->
   <div id="dashboard">
     <div class="top-bar">
-      <h1>MSM SmartStock — Tableau de bord</h1>
+      <h1>MSM SmartStock - Tableau de bord</h1>
       <button onclick="logout()">Déconnexion</button>
     </div>
     <div class="dashboard-body">
@@ -376,10 +376,10 @@
         tbody.innerHTML = data.map((row, i) => `
           <tr>
             <td>${i + 1}</td>
-            <td>${row.nom_entreprise || "—"}</td>
-            <td>${row.nom_responsable || "—"}</td>
-            <td>${row.telephone || "—"}</td>
-            <td>${row.email || "—"}</td>
+            <td>${row.nom_entreprise || "-"}</td>
+            <td>${row.nom_responsable || "-"}</td>
+            <td>${row.telephone || "-"}</td>
+            <td>${row.email || "-"}</td>
             <td>${new Date(row.submitted_at).toLocaleString("fr-FR")}</td>
             <td><button class="btn-voir" onclick="viewDetail(${row.id})">Voir</button></td>
           </tr>
@@ -409,23 +409,23 @@
         const oq = d.openQuestions || {};
 
         document.getElementById("modal-title").textContent =
-          `${g.nom_entreprise || "Réponse"} — Détail complet`;
+          `${g.nom_entreprise || "Réponse"} - Détail complet`;
 
         const tags = (val) => {
-          if (!val) return "—";
+          if (!val) return "-";
           try {
             const arr = typeof val === "string" ? JSON.parse(val) : val;
-            if (!arr.length) return "—";
+            if (!arr.length) return "-";
             return `<div class="tag-list">${arr.map(v => `<span class="tag">${v}</span>`).join("")}</div>`;
           } catch { return val; }
         };
 
-        const txt = (val) => val || "—";
+        const txt = (val) => val || "-";
 
         document.getElementById("modal-body").innerHTML = `
 
           <div class="modal-section">
-            <h3>Section 1 — Informations générales</h3>
+            <h3>Section 1 - Informations générales</h3>
             <div class="detail-grid">
               <div class="detail-item"><div class="label">Entreprise</div><div class="value">${txt(g.nom_entreprise)}</div></div>
               <div class="detail-item"><div class="label">Responsable</div><div class="value">${txt(g.nom_responsable)}</div></div>
@@ -439,7 +439,7 @@
           </div>
 
           <div class="modal-section">
-            <h3>Section 2 — Activités</h3>
+            <h3>Section 2 - Activités</h3>
             <div class="detail-grid">
               <div class="detail-item full"><div class="label">Types de produits</div><div class="value">${tags(a.types_produits)}</div></div>
               <div class="detail-item full"><div class="label">Autres produits</div><div class="value">${txt(a.autres_produits)}</div></div>
@@ -447,14 +447,14 @@
           </div>
 
           <div class="modal-section">
-            <h3>Section 3 & 4 — Catégories et produits</h3>
+            <h3>Section 3 & 4 - Catégories et produits</h3>
             <div class="detail-grid">
               <div class="detail-item full">
                 <div class="label">Catégories</div>
                 <div class="value">
                   ${d.categories && d.categories.length > 0
                     ? d.categories.map(c => `<span class="tag">${c.categorie}</span>`).join(" ")
-                    : "—"}
+                    : "-"}
                 </div>
               </div>
               <div class="detail-item full">
@@ -462,14 +462,14 @@
                 <div class="value">
                   ${d.productList && d.productList.length > 0
                     ? d.productList.map(p => `<strong>${p.categorie}</strong> : ${p.produits}`).join("<br/>")
-                    : "—"}
+                    : "-"}
                 </div>
               </div>
             </div>
           </div>
 
           <div class="modal-section">
-            <h3>Section 5 & 6 — Infos produits & unités</h3>
+            <h3>Section 5 & 6 - Infos produits & unités</h3>
             <div class="detail-grid">
               <div class="detail-item full"><div class="label">Informations souhaitées</div><div class="value">${tags(pd.infos_souhaitees)}</div></div>
               <div class="detail-item full"><div class="label">Autres infos</div><div class="value">${txt(pd.autres_infos)}</div></div>
@@ -479,7 +479,7 @@
           </div>
 
           <div class="modal-section">
-            <h3>Sections 7 à 12 — Opérations</h3>
+            <h3>Sections 7 à 12 - Opérations</h3>
             <div class="detail-grid">
               <div class="detail-item full"><div class="label">Méthode de gestion du stock</div><div class="value">${tags(op.gestion_stock_methode)}</div></div>
               <div class="detail-item full"><div class="label">Explication</div><div class="value">${txt(op.gestion_stock_explication)}</div></div>
@@ -503,7 +503,7 @@
           </div>
 
           <div class="modal-section">
-            <h3>Sections 13 à 15 — Difficultés & contexte</h3>
+            <h3>Sections 13 à 15 - Difficultés & contexte</h3>
             <div class="detail-grid">
               <div class="detail-item full"><div class="label">Difficultés rencontrées</div><div class="value">${tags(ci.difficultes)}</div></div>
               <div class="detail-item full"><div class="label">Plus grande difficulté</div><div class="value">${txt(ci.plus_grande_difficulte)}</div></div>
@@ -523,7 +523,7 @@
           </div>
 
           <div class="modal-section">
-            <h3>Section 16 — Questions ouvertes</h3>
+            <h3>Section 16 - Questions ouvertes</h3>
             <div class="detail-grid">
               <div class="detail-item full"><div class="label">1. Rupture de stock</div><div class="value">${txt(oq.q1_rupture)}</div></div>
               <div class="detail-item full"><div class="label">2. Perte de temps</div><div class="value">${txt(oq.q2_perte_temps)}</div></div>
